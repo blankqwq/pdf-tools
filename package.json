@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "An Electron application with React and TypeScript",
   "main": "./out/main/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/blankqwq/pdf-tools.git"
+  },
   "author": "example.com",
   "homepage": "https://electron-vite.org",
   "scripts": {
