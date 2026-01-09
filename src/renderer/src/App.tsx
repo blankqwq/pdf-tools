@@ -37,13 +37,13 @@ function App(): React.JSX.Element {
     setActiveTab(newTab)
   }
 
-  const handleExecute = async () => {
+  const handleExecute = async (): Promise<void> => {
     if (files.length === 0) return
 
     start()
     try {
       switch (activeTab) {
-        case 'merge':
+        case 'merge': {
           if (files.length < 2) {
             alert('Please select at least 2 PDF files to merge')
             reset()
@@ -55,8 +55,9 @@ function App(): React.JSX.Element {
             filters: [{ name: 'PDF', extensions: ['pdf'] }]
           })
           break
+        }
 
-        case 'split':
+        case 'split': {
           if (files.length !== 1) {
             alert('Please select exactly 1 PDF file to split')
             reset()
@@ -68,8 +69,9 @@ function App(): React.JSX.Element {
             filters: [{ name: 'ZIP Archive', extensions: ['zip'] }]
           })
           break
+        }
 
-        case 'img2pdf':
+        case 'img2pdf': {
           if (files.length === 0) {
             alert('Please select at least 1 image file')
             reset()
@@ -81,6 +83,7 @@ function App(): React.JSX.Element {
             filters: [{ name: 'PDF', extensions: ['pdf'] }]
           })
           break
+        }
 
         case 'pdf2any': {
           if (files.length !== 1) {
@@ -116,15 +119,16 @@ function App(): React.JSX.Element {
 
       // Files are no longer cleared after successful operation to keep preview
       // setFiles([])
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Operation failed', error)
-      alert(`Operation failed: ${error.message || error}`)
+      const message = error instanceof Error ? error.message : String(error)
+      alert(`Operation failed: ${message}`)
     } finally {
       reset()
     }
   }
 
-  const renderContent = () => {
+  const renderContent = (): React.JSX.Element => {
     const file = files.length > 0 ? files[0] : null
 
     switch (activeTab) {
