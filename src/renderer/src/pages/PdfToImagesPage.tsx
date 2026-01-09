@@ -1,100 +1,45 @@
-import { useState } from 'react'
-import { FileDropZone } from '../components/ui/FileDropZone'
-import { Button } from '../components/ui/Button'
-import { pdfToImageZip } from '../lib/pdf-conversion'
-import { ArrowRight, Loader2 } from 'lucide-react'
-
-import { useLanguage } from '../contexts/LanguageContext'
-import { useProgress } from '../hooks/useProgress'
-import { ProgressBar } from '../components/ui/ProgressBar'
 import { PdfPreview } from '../components/PdfPreview'
+import { FileDropZone } from '../components/ui/FileDropZone'
 
-export function PdfToImagesPage() {
-  const { t } = useLanguage()
-  const { progress, estimatedSecondsRemaining, start, update, reset } = useProgress()
-  const [file, setFile] = useState<File | null>(null)
-  const isConverting = progress > 0
+interface PdfToImagesPageProps {
+  file: File | null
+  onFilesChange: (files: File[]) => void
+}
 
-  const handleFilesSelected = (newFiles: File[]) => {
-    if (newFiles.length > 0) {
-      setFile(newFiles[0])
-    }
-  }
-
-  const handleConvert = async () => {
-    if (!file) return
-
-    start()
-    try {
-      const zipBytes = await pdfToImageZip(file, (p) => {
-        update(p)
-      })
-
-      await window.electron.ipcRenderer.invoke('dialog:saveFile', {
-        buffer: zipBytes,
-        filters: [{ name: 'ZIP Archive', extensions: ['zip'] }]
-      })
-    } catch (error) {
-      console.error('Conversion failed', error)
-    } finally {
-      reset()
+export function PdfToImagesPage({ file, onFilesChange }: PdfToImagesPageProps) {
+  const handleFilesSelected = (files: File[]) => {
+    if (files.length > 0) {
+      onFilesChange([files[0]])
     }
   }
 
   if (!file) {
     return (
-      <div className="p-10 h-full flex flex-col">
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="max-w-xl w-full">
-            <h2 className="text-3xl font-bold text-slate-200 mb-2 text-center">
-              {t('page.pdf2img.title')}
-            </h2>
-            <p className="text-slate-400 mb-8 text-center block">{t('page.pdf2img.description')}</p>
-            <FileDropZone
-              onFilesSelected={handleFilesSelected}
-              accept="application/pdf"
-              multiple={false}
-              description={t('page.pdf2img.dropDescription')}
-            />
-          </div>
+      <div className="h-full flex items-center justify-center p-8">
+        <div className="max-w-xl w-full">
+          <FileDropZone
+            onFilesSelected={handleFilesSelected}
+            accept="application/pdf"
+            multiple={false}
+            description="Drop PDF file here or click to upload"
+          />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="p-8 h-full flex flex-col max-w-5xl mx-auto">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-200">{t('page.pdf2img.title')}</h2>
-            <p className="text-slate-400">{t('page.pdf2img.subtitle', { name: file.name })}</p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={() => setFile(null)} disabled={isConverting}>
-              {t('common.clear')}
-            </Button>
-            <Button onClick={handleConvert} disabled={isConverting}>
-              {isConverting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ArrowRight className="w-4 h-4" />
-              )}
-              {isConverting ? t('common.converting') : t('page.pdf2img.convert')}
-            </Button>
-          </div>
-        </div>
-
-        {isConverting && (
-          <ProgressBar
-            progress={progress}
-            label={t('common.converting')}
-            estimatedSecondsRemaining={estimatedSecondsRemaining}
-          />
-        )}
+    <div className="h-full flex flex-col">
+      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-slate-200">Preview</h3>
+        <button
+          onClick={() => onFilesChange([])}
+          className="text-sm text-red-400 hover:text-red-300 transition-colors"
+        >
+          Clear File
+        </button>
       </div>
-
-      <div className="flex-1">
+      <div className="flex-1 p-8">
         <PdfPreview file={file} className="h-full" />
       </div>
     </div>

@@ -5,9 +5,8 @@ export const zh: Translations = {
   'sidebar.merge': '合并 PDF',
   'sidebar.split': '拆分 PDF',
   'sidebar.img2pdf': '图片转 PDF',
-  'sidebar.pdf2img': 'PDF 转图片',
-  'sidebar.pdf2ppt': 'PDF 转 PPT',
-  'sidebar.pdf2word': 'PDF 转 Word',
+  'sidebar.pdf2any': 'PDF 转换格式',
+  'common.preview': '预览',
   'common.dropZone.description': '拖拽文件到此处',
   'common.dropZone.button': '选择文件',
   'common.clear': '清除',
@@ -21,6 +20,14 @@ export const zh: Translations = {
   'common.preview.loading': '加载预览中...',
   'common.preview.page': '页',
   'common.preview.of': '共',
+
+  'sidebar.uploadFile': '上传文件',
+  'sidebar.addFiles': '添加文件',
+  'sidebar.noFiles': '未选择文件',
+  'sidebar.fileCount': '已选择 {count} 个文件',
+  'sidebar.execute': '执行',
+  'sidebar.processing': '处理中...',
+  'sidebar.removeFile': '移除',
 
   'page.merge.title': '合并 PDF',
   'page.merge.description': '将多个 PDF 文件合并为一个。',
@@ -43,22 +50,7 @@ export const zh: Translations = {
   'page.img2pdf.addMore': '添加更多图片',
   'page.img2pdf.convert': '转换为 PDF',
 
-  'page.pdf2img.title': 'PDF 转图片',
-  'page.pdf2img.description': '将 PDF 页面转换为图片。',
-  'page.pdf2img.dropDescription': '拖拽 PDF 文件到此处',
-  'page.pdf2img.subtitle': '将 {name} 转换为 PNG',
-  'page.pdf2img.outputHint': '将导出一个包含所有 PNG 页面的 .zip 文件',
-  'page.pdf2img.convert': '转换并下载 ZIP',
-
-  'page.pdf2ppt.title': 'PDF 转 PPT',
-  'page.pdf2ppt.description': '将 PDF 幻灯片转换为 PowerPoint 演示文稿。',
-  'page.pdf2ppt.dropDescription': '拖拽 PDF 文件到此处',
-  'page.pdf2ppt.subtitle': '将 {name} 转换为 PPTX',
-  'page.pdf2ppt.convert': '转换为 PPTX',
-
-  'page.pdf2word.title': 'PDF 转 Word',
-  'page.pdf2word.description': '提取 PDF 文本并转换为 Word 文档。',
-  'page.pdf2word.dropDescription': '拖拽 PDF 文件到此处',
-  'page.pdf2word.subtitle': '将 {name} 转换为 DOCX',
-  'page.pdf2word.convert': '转换为 DOCX'
+  'page.pdf2any.title': 'PDF 转换格式',
+  'page.pdf2any.description': '将 PDF 转换为 Word、PPT 或图片。',
+  'page.pdf2any.dropDescription': '拖拽 PDF 文件到此处以转换格式'
 }

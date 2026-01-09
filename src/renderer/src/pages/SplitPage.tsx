@@ -1,100 +1,45 @@
-import { useState } from 'react'
-import { FileDropZone } from '../components/ui/FileDropZone'
-import { Button } from '../components/ui/Button'
-import { splitPdf } from '../lib/pdf-actions'
-import { ArrowRight, Loader2 } from 'lucide-react'
-
-import { useLanguage } from '../contexts/LanguageContext'
-import { useProgress } from '../hooks/useProgress'
-import { ProgressBar } from '../components/ui/ProgressBar'
 import { PdfPreview } from '../components/PdfPreview'
+import { FileDropZone } from '../components/ui/FileDropZone'
 
-export function SplitPage() {
-  const { t } = useLanguage()
-  const { progress, estimatedSecondsRemaining, start, update, reset } = useProgress()
-  const [file, setFile] = useState<File | null>(null)
-  const isSplitting = progress > 0
+interface SplitPageProps {
+  file: File | null
+  onFilesChange: (files: File[]) => void
+}
 
-  const handleFilesSelected = (newFiles: File[]) => {
-    if (newFiles.length > 0) {
-      setFile(newFiles[0])
-    }
-  }
-
-  const handleSplit = async () => {
-    if (!file) return
-
-    start()
-    try {
-      const zipBytes = await splitPdf(file, (p) => {
-        update(p)
-      })
-
-      await window.electron.ipcRenderer.invoke('dialog:saveFile', {
-        buffer: zipBytes,
-        filters: [{ name: 'ZIP Archive', extensions: ['zip'] }]
-      })
-    } catch (error) {
-      console.error('Split failed', error)
-    } finally {
-      reset()
+export function SplitPage({ file, onFilesChange }: SplitPageProps) {
+  const handleFilesSelected = (files: File[]) => {
+    if (files.length > 0) {
+      onFilesChange([files[0]])
     }
   }
 
   if (!file) {
     return (
-      <div className="p-10 h-full flex flex-col">
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="max-w-xl w-full">
-            <h2 className="text-3xl font-bold text-slate-200 mb-2 text-center">
-              {t('page.split.title')}
-            </h2>
-            <p className="text-slate-400 mb-8 text-center block">{t('page.split.description')}</p>
-            <FileDropZone
-              onFilesSelected={handleFilesSelected}
-              accept="application/pdf"
-              multiple={false}
-              description={t('page.split.dropDescription')}
-            />
-          </div>
+      <div className="h-full flex items-center justify-center p-8">
+        <div className="max-w-xl w-full">
+          <FileDropZone
+            onFilesSelected={handleFilesSelected}
+            accept="application/pdf"
+            multiple={false}
+            description="Drop PDF file here or click to upload"
+          />
         </div>
       </div>
     )
   }
 
   return (
-    <div className="p-8 h-full flex flex-col max-w-5xl mx-auto">
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h2 className="text-2xl font-bold text-slate-200">{t('page.split.title')}</h2>
-            <p className="text-slate-400">{t('page.split.subtitle', { name: file.name })}</p>
-          </div>
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={() => setFile(null)} disabled={isSplitting}>
-              {t('common.clear')}
-            </Button>
-            <Button onClick={handleSplit} disabled={isSplitting}>
-              {isSplitting ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ArrowRight className="w-4 h-4" />
-              )}
-              {isSplitting ? t('common.converting') : t('page.split.convert')}
-            </Button>
-          </div>
-        </div>
-
-        {isSplitting && (
-          <ProgressBar
-            progress={progress}
-            label={t('common.converting')}
-            estimatedSecondsRemaining={estimatedSecondsRemaining}
-          />
-        )}
+    <div className="h-full flex flex-col">
+      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <h3 className="text-lg font-semibold text-slate-200">Preview</h3>
+        <button
+          onClick={() => onFilesChange([])}
+          className="text-sm text-red-400 hover:text-red-300 transition-colors"
+        >
+          Clear File
+        </button>
       </div>
-
-      <div className="flex-1">
+      <div className="flex-1 p-8">
         <PdfPreview file={file} className="h-full" />
       </div>
     </div>

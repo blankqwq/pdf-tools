@@ -18,9 +18,19 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
   const [numPages, setNumPages] = useState(0)
   const [scale, setScale] = useState(1.0)
   const [loading, setLoading] = useState(true)
+  const loadedFileRef = useRef<{ name: string; size: number } | null>(null)
 
   // Load PDF
   useEffect(() => {
+    // Check if this is the same file we already loaded
+    if (
+      loadedFileRef.current &&
+      loadedFileRef.current.name === file.name &&
+      loadedFileRef.current.size === file.size
+    ) {
+      return // Skip reload if same file
+    }
+
     let isMounted = true
     setLoading(true)
 
@@ -35,6 +45,7 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
           setNumPages(pdfDoc.numPages)
           setCurrentPage(1)
           setLoading(false)
+          loadedFileRef.current = { name: file.name, size: file.size }
         }
       } catch (error) {
         console.error('Failed to load PDF:', error)

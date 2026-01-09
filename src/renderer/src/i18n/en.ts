@@ -5,9 +5,8 @@ export const en: Translations = {
   'sidebar.merge': 'Merge PDF',
   'sidebar.split': 'Split PDF',
   'sidebar.img2pdf': 'Images to PDF',
-  'sidebar.pdf2img': 'PDF to Images',
-  'sidebar.pdf2ppt': 'PDF to PPT',
-  'sidebar.pdf2word': 'PDF to Word',
+  'sidebar.pdf2any': 'Convert PDF',
+  'common.preview': 'Preview',
   'common.dropZone.description': 'Drop files here',
   'common.dropZone.button': 'Select Files',
   'common.clear': 'Clear',
@@ -21,6 +20,14 @@ export const en: Translations = {
   'common.preview.loading': 'Loading preview...',
   'common.preview.page': 'Page',
   'common.preview.of': 'of',
+
+  'sidebar.uploadFile': 'Upload File',
+  'sidebar.addFiles': 'Add Files',
+  'sidebar.noFiles': 'No files selected',
+  'sidebar.fileCount': '{count} file(s) selected',
+  'sidebar.execute': 'Execute',
+  'sidebar.processing': 'Processing...',
+  'sidebar.removeFile': 'Remove',
 
   'page.merge.title': 'Merge PDFs',
   'page.merge.description': 'Combine multiple PDF files into a single document.',
@@ -43,22 +50,7 @@ export const en: Translations = {
   'page.img2pdf.addMore': 'Add more images',
   'page.img2pdf.convert': 'Convert to PDF',
 
-  'page.pdf2img.title': 'PDF to Images',
-  'page.pdf2img.description': 'Convert PDF pages to high-quality images.',
-  'page.pdf2img.dropDescription': 'Drop PDF file here',
-  'page.pdf2img.subtitle': 'Convert {name} to PNGs',
-  'page.pdf2img.outputHint': 'Will output a .zip file containing all pages as PNG',
-  'page.pdf2img.convert': 'Convert & Download ZIP',
-
-  'page.pdf2ppt.title': 'PDF to PowerPoint',
-  'page.pdf2ppt.description': 'Convert PDF slides to editable PowerPoint presentation.',
-  'page.pdf2ppt.dropDescription': 'Drop PDF file here',
-  'page.pdf2ppt.subtitle': 'Convert {name} to PPTX',
-  'page.pdf2ppt.convert': 'Convert to PPTX',
-
-  'page.pdf2word.title': 'PDF to Word',
-  'page.pdf2word.description': 'Extract text from PDF to Word document.',
-  'page.pdf2word.dropDescription': 'Drop PDF file here',
-  'page.pdf2word.subtitle': 'Convert {name} to DOCX',
-  'page.pdf2word.convert': 'Convert to DOCX'
+  'page.pdf2any.title': 'Convert PDF',
+  'page.pdf2any.description': 'Convert PDF to Word, PowerPoint, or Images.',
+  'page.pdf2any.dropDescription': 'Drop PDF file here to convert'
 }
