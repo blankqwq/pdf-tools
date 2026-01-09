@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
 export type TabId = 'merge' | 'split' | 'img2pdf' | 'pdf2img' | 'pdf2ppt' | 'pdf2word'
 
 import { useLanguage } from '../contexts/LanguageContext'
-import { TranslationKey } from '../i18n/types'
+
 
 interface SidebarProps {
   activeTab: TabId

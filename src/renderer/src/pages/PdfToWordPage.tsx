@@ -3,7 +3,7 @@ import { FileDropZone } from '../components/ui/FileDropZone'
 import { Button } from '../components/ui/Button'
 import { ProgressBar } from '../components/ui/ProgressBar'
 import { pdfToDocx } from '../lib/pdf-conversion'
-import { ArrowRight, Loader2, FileText } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 import { useLanguage } from '../contexts/LanguageContext'
 import { useProgress } from '../hooks/useProgress'

@@ -2,11 +2,12 @@ import { useState } from 'react'
 import { FileDropZone } from '../components/ui/FileDropZone'
 import { Button } from '../components/ui/Button'
 import { splitPdf } from '../lib/pdf-actions'
-import { Split, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 import { useLanguage } from '../contexts/LanguageContext'
 import { useProgress } from '../hooks/useProgress'
 import { ProgressBar } from '../components/ui/ProgressBar'
+import { PdfPreview } from '../components/PdfPreview'
 
 export function SplitPage() {
   const { t } = useLanguage()
@@ -63,7 +64,6 @@ export function SplitPage() {
 
   return (
     <div className="p-8 h-full flex flex-col max-w-5xl mx-auto">
-
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
           <div>
@@ -84,7 +84,7 @@ export function SplitPage() {
             </Button>
           </div>
         </div>
-        
+
         {isSplitting && (
           <ProgressBar
             progress={progress}

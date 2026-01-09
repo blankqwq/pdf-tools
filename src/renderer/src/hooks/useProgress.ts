@@ -19,7 +19,7 @@ export function useProgress() {
   }, [])
   
   const update = useCallback((percentage: number) => {
-    setState(prev => {
+    setState(() => {
       const now = Date.now()
       if (!startTimeRef.current) startTimeRef.current = now
       

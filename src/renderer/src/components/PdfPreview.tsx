@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import * as pdfjsLib from 'pdfjs-dist'
 import { ChevronLeft, ChevronRight, ZoomIn, ZoomOut, Maximize2 } from 'lucide-react'
-import { useLanguage } from '../contexts/LanguageContext'
 import { Button } from './ui/Button'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 
@@ -13,7 +12,6 @@ interface PdfPreviewProps {
 }
 
 export function PdfPreview({ file, className }: PdfPreviewProps) {
-  const { t } = useLanguage()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [pdf, setPdf] = useState<pdfjsLib.PDFDocumentProxy | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
@@ -25,13 +23,13 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
   useEffect(() => {
     let isMounted = true
     setLoading(true)
-    
+
     const loadPdf = async () => {
       try {
         const arrayBuffer = await file.arrayBuffer()
         const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
         const pdfDoc = await loadingTask.promise
-        
+
         if (isMounted) {
           setPdf(pdfDoc)
           setNumPages(pdfDoc.numPages)
@@ -80,19 +78,19 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
   }, [pdf, currentPage, scale])
 
   const handlePrevPage = () => {
-    setCurrentPage(prev => Math.max(1, prev - 1))
+    setCurrentPage((prev) => Math.max(1, prev - 1))
   }
 
   const handleNextPage = () => {
-    setCurrentPage(prev => Math.min(numPages, prev + 1))
+    setCurrentPage((prev) => Math.min(numPages, prev + 1))
   }
 
   const handleZoomIn = () => {
-    setScale(prev => Math.min(3, prev + 0.25))
+    setScale((prev) => Math.min(3, prev + 0.25))
   }
 
   const handleZoomOut = () => {
-    setScale(prev => Math.max(0.5, prev - 0.25))
+    setScale((prev) => Math.max(0.5, prev - 0.25))
   }
 
   const handleFitWidth = () => {
@@ -110,35 +108,39 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
     // Scroll down = next page, scroll up = previous page
     if (e.deltaY > 0) {
       // Scrolling down
-      setCurrentPage(prev => Math.min(numPages, prev + 1))
+      setCurrentPage((prev) => Math.min(numPages, prev + 1))
     } else if (e.deltaY < 0) {
       // Scrolling up
-      setCurrentPage(prev => Math.max(1, prev - 1))
+      setCurrentPage((prev) => Math.max(1, prev - 1))
     }
   }
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center bg-slate-800/20 rounded-2xl border border-slate-800 ${className || ''}`}>
+      <div
+        className={`flex items-center justify-center bg-slate-800/20 rounded-2xl border border-slate-800 ${className || ''}`}
+      >
         <p className="text-slate-500">Loading preview...</p>
       </div>
     )
   }
 
   return (
-    <div className={`flex flex-col bg-slate-800/20 rounded-2xl border border-slate-800 ${className || ''}`}>
+    <div
+      className={`flex flex-col bg-slate-800/20 rounded-2xl border border-slate-800 ${className || ''}`}
+    >
       {/* Controls */}
       <div className="flex items-center justify-between p-3 border-b border-slate-700">
         <div className="flex items-center gap-2">
-          <Button 
-            variant="secondary" 
-            onClick={handlePrevPage} 
+          <Button
+            variant="secondary"
+            onClick={handlePrevPage}
             disabled={currentPage === 1}
             className="!p-2"
           >
             <ChevronLeft className="w-4 h-4" />
           </Button>
-          
+
           <div className="flex items-center gap-2 text-sm text-slate-300">
             <input
               type="number"
@@ -151,9 +153,9 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
             <span className="text-slate-500">/ {numPages}</span>
           </div>
 
-          <Button 
-            variant="secondary" 
-            onClick={handleNextPage} 
+          <Button
+            variant="secondary"
+            onClick={handleNextPage}
             disabled={currentPage === numPages}
             className="!p-2"
           >
@@ -162,40 +164,31 @@ export function PdfPreview({ file, className }: PdfPreviewProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button 
-            variant="secondary" 
-            onClick={handleZoomOut} 
+          <Button
+            variant="secondary"
+            onClick={handleZoomOut}
             disabled={scale <= 0.5}
             className="!p-2"
           >
             <ZoomOut className="w-4 h-4" />
           </Button>
-          
+
           <span className="text-sm text-slate-400 min-w-[3rem] text-center">
             {Math.round(scale * 100)}%
           </span>
 
-          <Button 
-            variant="secondary" 
-            onClick={handleZoomIn} 
-            disabled={scale >= 3}
-            className="!p-2"
-          >
+          <Button variant="secondary" onClick={handleZoomIn} disabled={scale >= 3} className="!p-2">
             <ZoomIn className="w-4 h-4" />
           </Button>
 
-          <Button 
-            variant="secondary" 
-            onClick={handleFitWidth}
-            className="!p-2"
-          >
+          <Button variant="secondary" onClick={handleFitWidth} className="!p-2">
             <Maximize2 className="w-4 h-4" />
           </Button>
         </div>
       </div>
 
       {/* Canvas */}
-      <div 
+      <div
         className="flex-1 overflow-auto p-4 flex items-center justify-center bg-slate-900/50"
         onWheel={handleWheel}
       >

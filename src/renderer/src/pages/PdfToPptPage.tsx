@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FileDropZone } from '../components/ui/FileDropZone'
 import { Button } from '../components/ui/Button'
 import { pdfToPptx } from '../lib/pdf-conversion'
-import { ArrowRight, Loader2, Presentation } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 import { useLanguage } from '../contexts/LanguageContext'
 import { useProgress } from '../hooks/useProgress'

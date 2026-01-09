@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { en } from '../i18n/en'
 import { zh } from '../i18n/zh'
-import { Translations, TranslationKey } from '../i18n/types'
+import { TranslationKey } from '../i18n/types'
 
 type Locale = 'en' | 'zh'
 

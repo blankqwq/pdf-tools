@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { FileDropZone } from '../components/ui/FileDropZone'
 import { Button } from '../components/ui/Button'
 import { pdfToImageZip } from '../lib/pdf-conversion'
-import { FileImage, ArrowRight, Loader2 } from 'lucide-react'
+import { ArrowRight, Loader2 } from 'lucide-react'
 
 import { useLanguage } from '../contexts/LanguageContext'
 import { useProgress } from '../hooks/useProgress'
