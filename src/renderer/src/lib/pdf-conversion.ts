@@ -10,7 +10,7 @@ import { Document, Packer, Paragraph, TextRun, PageBreak, ImageRun } from 'docx'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfWorker
 
-export async function pdfToPptx(file: File): Promise<Uint8Array> {
+export async function pdfToPptx(file: File, onProgress?: (percent: number) => void): Promise<Uint8Array> {
   const arrayBuffer = await file.arrayBuffer()
   const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
   const pdf = await loadingTask.promise
@@ -20,6 +20,7 @@ export async function pdfToPptx(file: File): Promise<Uint8Array> {
   const numPages = pdf.numPages
   
   for (let i = 1; i <= numPages; i++) {
+    onProgress?.(Math.round((i / numPages) * 100))
     const page = await pdf.getPage(i)
     const viewport = page.getViewport({ scale: 2.0 }) // 2x scale for better quality
     
@@ -361,7 +362,7 @@ export async function pdfToDocx(file: File, onProgress?: (percent: number) => vo
   return new Uint8Array(blobBuffer)
 }
 
-export async function pdfToImageZip(file: File): Promise<Uint8Array> {
+export async function pdfToImageZip(file: File, onProgress?: (percent: number) => void): Promise<Uint8Array> {
   const arrayBuffer = await file.arrayBuffer()
   const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer })
   const pdf = await loadingTask.promise
@@ -370,6 +371,7 @@ export async function pdfToImageZip(file: File): Promise<Uint8Array> {
   const zip = new JSZip()
 
   for (let i = 1; i <= numPages; i++) {
+    onProgress?.(Math.round((i / numPages) * 100))
     const page = await pdf.getPage(i)
     const viewport = page.getViewport({ scale: 2.0 })
     

@@ -16,19 +16,24 @@ export function cn(...inputs: ClassValue[]) {
 
 export type TabId = 'merge' | 'split' | 'img2pdf' | 'pdf2img' | 'pdf2ppt' | 'pdf2word'
 
+import { useLanguage } from '../contexts/LanguageContext'
+import { TranslationKey } from '../i18n/types'
+
 interface SidebarProps {
   activeTab: TabId
   onTabChange: (tab: TabId) => void
 }
 
 export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
+  const { t, locale, setLocale } = useLanguage()
+
   const navItems = [
-    { id: 'merge', label: 'Merge PDF', icon: Merge },
-    { id: 'split', label: 'Split PDF', icon: Split },
-    { id: 'img2pdf', label: 'Images to PDF', icon: Image },
-    { id: 'pdf2img', label: 'PDF to Images', icon: FileImage },
-    { id: 'pdf2ppt', label: 'PDF to PPT', icon: Presentation },
-    { id: 'pdf2word', label: 'PDF to Word', icon: FileText },
+    { id: 'merge', label: t('sidebar.merge'), icon: Merge },
+    { id: 'split', label: t('sidebar.split'), icon: Split },
+    { id: 'img2pdf', label: t('sidebar.img2pdf'), icon: Image },
+    { id: 'pdf2img', label: t('sidebar.pdf2img'), icon: FileImage },
+    { id: 'pdf2ppt', label: t('sidebar.pdf2ppt'), icon: Presentation },
+    { id: 'pdf2word', label: t('sidebar.pdf2word'), icon: FileText },
   ] as const
 
   return (
@@ -36,7 +41,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       <div className="p-6 flex items-center gap-3">
         <Files className="w-8 h-8 text-blue-400" />
         <h1 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">
-          PDF Tools
+          {t('app.title')}
         </h1>
       </div>
       
@@ -61,7 +66,15 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
         ))}
       </nav>
 
-      <div className="p-4 border-t border-slate-800/50">
+      <div className="p-4 border-t border-slate-800/50 flex flex-col gap-4">
+        <button 
+          onClick={() => setLocale(locale === 'en' ? 'zh' : 'en')}
+          className="text-xs text-slate-400 hover:text-white transition-colors flex items-center justify-center gap-2 border border-slate-700 rounded-lg py-2 hover:bg-slate-800"
+        >
+          <span>{locale === 'en' ? '🇺🇸 English' : '🇨🇳 中文'}</span>
+          <span className="text-slate-600">|</span>
+          <span>{locale === 'en' ? 'Switch to 中文' : 'Switch to English'}</span>
+        </button>
         <div className="text-xs text-slate-500 text-center">
           v1.0.0 • Electron
         </div>

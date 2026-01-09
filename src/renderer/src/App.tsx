@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Layout } from './components/Layout'
 import { Sidebar, TabId } from './components/Sidebar'
+import { LanguageProvider } from './contexts/LanguageContext'
 
 import { MergePage } from './pages/MergePage'
 import { ImagesToPdfPage } from './pages/ImagesToPdfPage'
@@ -32,12 +33,12 @@ function App(): React.JSX.Element {
   }
 
   return (
-    <Layout>
-      <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
-      <main className="flex-1 h-full bg-slate-950 overflow-auto">
-        {renderContent()}
-      </main>
-    </Layout>
+    <LanguageProvider>
+      <Layout>
+        <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <main className="flex-1 h-full bg-slate-950 overflow-auto">{renderContent()}</main>
+      </Layout>
+    </LanguageProvider>
   )
 }
 

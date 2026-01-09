@@ -4,9 +4,16 @@ import { Button } from '../components/ui/Button'
 import { pdfToPptx } from '../lib/pdf-conversion'
 import { ArrowRight, Loader2, Presentation } from 'lucide-react'
 
+import { useLanguage } from '../contexts/LanguageContext'
+import { useProgress } from '../hooks/useProgress'
+import { ProgressBar } from '../components/ui/ProgressBar'
+import { PdfPreview } from '../components/PdfPreview'
+
 export function PdfToPptPage() {
+  const { t } = useLanguage()
+  const { progress, estimatedSecondsRemaining, start, update, reset } = useProgress()
   const [file, setFile] = useState<File | null>(null)
-  const [isConverting, setIsConverting] = useState(false)
+  const isConverting = progress > 0
 
   const handleFilesSelected = (newFiles: File[]) => {
     // Single file for now to keep it simple, or multiple?
@@ -18,20 +25,21 @@ export function PdfToPptPage() {
 
   const handleConvert = async () => {
     if (!file) return
-    
-    setIsConverting(true)
+
+    start()
     try {
-      const pptxBytes = await pdfToPptx(file)
-      
+      const pptxBytes = await pdfToPptx(file, (p) => {
+        update(p)
+      })
+
       await window.electron.ipcRenderer.invoke('dialog:saveFile', {
         buffer: pptxBytes,
         filters: [{ name: 'PowerPoint', extensions: ['pptx'] }]
       })
-      
     } catch (error) {
       console.error('Conversion failed', error)
     } finally {
-      setIsConverting(false)
+      reset()
     }
   }
 
@@ -40,14 +48,16 @@ export function PdfToPptPage() {
       <div className="p-10 h-full flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center">
           <div className="max-w-xl w-full">
-             <h2 className="text-3xl font-bold text-slate-200 mb-2 text-center">PDF to PowerPoint</h2>
-             <p className="text-slate-400 mb-8 text-center block">Convert PDF slides to editable PowerPoint presentation.</p>
-             <FileDropZone 
-               onFilesSelected={handleFilesSelected} 
-               accept="application/pdf"
-               multiple={false} 
-               description="Drop PDF file here" 
-             />
+            <h2 className="text-3xl font-bold text-slate-200 mb-2 text-center">
+              {t('page.pdf2ppt.title')}
+            </h2>
+            <p className="text-slate-400 mb-8 text-center block">{t('page.pdf2ppt.description')}</p>
+            <FileDropZone
+              onFilesSelected={handleFilesSelected}
+              accept="application/pdf"
+              multiple={false}
+              description={t('page.pdf2ppt.dropDescription')}
+            />
           </div>
         </div>
       </div>
@@ -56,24 +66,38 @@ export function PdfToPptPage() {
 
   return (
     <div className="p-8 h-full flex flex-col max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h2 className="text-2xl font-bold text-slate-200">PDF to PowerPoint</h2>
-          <p className="text-slate-400">Convert {file.name} to PPTX</p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-2xl font-bold text-slate-200">{t('page.pdf2ppt.title')}</h2>
+            <p className="text-slate-400">{t('page.pdf2ppt.subtitle', { name: file.name })}</p>
+          </div>
+          <div className="flex gap-3">
+            <Button variant="secondary" onClick={() => setFile(null)} disabled={isConverting}>
+              {t('common.clear')}
+            </Button>
+            <Button onClick={handleConvert} disabled={isConverting}>
+              {isConverting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ArrowRight className="w-4 h-4" />
+              )}
+              {isConverting ? t('common.converting') : t('page.pdf2ppt.convert')}
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-3">
-          <Button variant="secondary" onClick={() => setFile(null)} disabled={isConverting}>Clear</Button>
-          <Button onClick={handleConvert} disabled={isConverting}>
-            {isConverting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-            {isConverting ? 'Converting...' : 'Convert to PPTX'}
-          </Button>
-        </div>
+
+        {isConverting && (
+          <ProgressBar
+            progress={progress}
+            label={t('common.converting')}
+            estimatedSecondsRemaining={estimatedSecondsRemaining}
+          />
+        )}
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center bg-slate-800/20 rounded-2xl border border-slate-800 border-dashed">
-         <Presentation className="w-24 h-24 text-slate-700 mb-4" />
-         <p className="text-slate-500 font-medium">{file.name}</p>
-         <p className="text-slate-600 text-sm mt-2">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+      <div className="flex-1">
+        <PdfPreview file={file} className="h-full" />
       </div>
     </div>
   )

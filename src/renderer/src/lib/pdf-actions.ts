@@ -1,10 +1,12 @@
 import { PDFDocument } from 'pdf-lib'
 import JSZip from 'jszip'
 
-export async function mergePdfs(files: File[]): Promise<Uint8Array> {
+export async function mergePdfs(files: File[], onProgress?: (percent: number) => void): Promise<Uint8Array> {
   const mergedPdf = await PDFDocument.create()
   
-  for (const file of files) {
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    onProgress?.(Math.round(((i + 1) / files.length) * 100))
     const fileBuffer = await file.arrayBuffer()
     const pdf = await PDFDocument.load(fileBuffer)
     const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices())
@@ -14,10 +16,12 @@ export async function mergePdfs(files: File[]): Promise<Uint8Array> {
   return await mergedPdf.save()
 }
 
-export async function imagesToPdf(files: File[]): Promise<Uint8Array> {
+export async function imagesToPdf(files: File[], onProgress?: (percent: number) => void): Promise<Uint8Array> {
   const pdfDoc = await PDFDocument.create()
 
-  for (const file of files) {
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    onProgress?.(Math.round(((i + 1) / files.length) * 100))
     const arrayBuffer = await file.arrayBuffer()
     let image
     
@@ -54,7 +58,7 @@ export async function imagesToPdf(files: File[]): Promise<Uint8Array> {
   return await pdfDoc.save()
 }
 
-export async function splitPdf(file: File): Promise<Uint8Array> {
+export async function splitPdf(file: File, onProgress?: (percent: number) => void): Promise<Uint8Array> {
   const arrayBuffer = await file.arrayBuffer()
   const pdfDoc = await PDFDocument.load(arrayBuffer)
   const numberOfPages = pdfDoc.getPageCount()
@@ -63,6 +67,7 @@ export async function splitPdf(file: File): Promise<Uint8Array> {
 
   // Loop through pages and save each as a new PDF
   for (let i = 0; i < numberOfPages; i++) {
+    onProgress?.(Math.round(((i + 1) / numberOfPages) * 100))
     const subPdf = await PDFDocument.create()
     const [copiedPage] = await subPdf.copyPages(pdfDoc, [i])
     subPdf.addPage(copiedPage)

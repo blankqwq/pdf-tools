@@ -1,12 +1,16 @@
 import { twMerge } from 'tailwind-merge'
+import { useLanguage } from '../../contexts/LanguageContext'
 
 interface ProgressBarProps {
   progress: number
   className?: string
   label?: string
+  estimatedSecondsRemaining?: number | null
 }
 
-export function ProgressBar({ progress, className, label }: ProgressBarProps) {
+export function ProgressBar({ progress, className, label, estimatedSecondsRemaining }: ProgressBarProps) {
+  const { t } = useLanguage()
+
   return (
     <div className={twMerge("w-full max-w-md", className)}>
       <div className="flex justify-between mb-1">
@@ -19,6 +23,11 @@ export function ProgressBar({ progress, className, label }: ProgressBarProps) {
           style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
         />
       </div>
+      {estimatedSecondsRemaining !== null && estimatedSecondsRemaining !== undefined && estimatedSecondsRemaining > 0 && (
+        <p className="text-xs text-slate-500 mt-2 text-center">
+          {t('common.timeRemaining')}: {estimatedSecondsRemaining} {t('common.seconds')}
+        </p>
+      )}
     </div>
   )
 }
